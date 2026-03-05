@@ -24,11 +24,14 @@ RUN aqt install-qt linux desktop 6.8.1 linux_gcc_64 \
 RUN aqt install-qt linux android 6.8.1 android_arm64_v8a \
         -O /opt/Qt
 
-# --- Module Qt5Compat : remplace QtGraphicalEffects (FastBlur, ColorOverlay…) ---
+# --- Modules Qt additionnels pour Android arm64 ---
+# qtconnectivity = QtBluetooth ; qt5compat = remplacement QtGraphicalEffects
 RUN aqt install-qt linux android 6.8.1 android_arm64_v8a \
-        -m qt5compat -O /opt/Qt
+        -m qtconnectivity qt5compat qtsvg -O /opt/Qt
+
+# --- Modules Qt additionnels pour l'hôte Linux (outils de build) ---
 RUN aqt install-qt linux desktop 6.8.1 linux_gcc_64 \
-        -m qt5compat -O /opt/Qt
+        -m qtconnectivity qt5compat qtsvg -O /opt/Qt
 
 # --- Android cmdline-tools v9.0 (bootstrap) ---
 ENV ANDROID_SDK_ROOT=/opt/android-sdk
