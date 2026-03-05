@@ -84,7 +84,7 @@ void SysTrayManager::repaintTray()
         text = "N/A";
     }
 
-    float factor = (pixmap.width()-2) / painter.fontMetrics().width((text.length() == 1) ? "00" : text);
+    float factor = (pixmap.width()-2) / painter.fontMetrics().horizontalAdvance((text.length() == 1) ? "00" : text);
     font.setPointSizeF(font.pointSizeF()*factor);
 
     painter.setFont(font);
@@ -96,7 +96,7 @@ void SysTrayManager::repaintTray()
     pen.setColor(Qt::black);
     painter.drawText( QRect(0,0,pixmap.width(),pixmap.height()), Qt::AlignCenter, text );
 #else
-    path.addText((pixmap.width() - painter.fontMetrics().width(text)) / 2, (pixmap.height() / 2) + (painter.fontMetrics().height() / 4), font, text); //Adjust the position
+    path.addText((pixmap.width() - painter.fontMetrics().horizontalAdvance(text)) / 2, (pixmap.height() / 2) + (painter.fontMetrics().height() / 4), font, text); //Adjust the position
 
     painter.fillPath(path, QBrush(Qt::black));
 

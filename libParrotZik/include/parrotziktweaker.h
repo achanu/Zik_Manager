@@ -135,7 +135,7 @@ class ParrotZikTweeker: public QObject
 
     Q_PROPERTY(int autoPowerOff READ autoPowerOff WRITE setAutoPowerOff NOTIFY autoPowerOffChanged)
 
-    Q_ENUMS(Capabilities)
+    Q_ENUM(Capabilities)
 public:
     ParrotZikTweeker();
     ParrotZikTweeker(QString btAddr);

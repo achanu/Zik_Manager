@@ -31,7 +31,7 @@ QML_IMPORT_PATH =
 # Default rules for deployment.
 include(deployment.pri)
 
-QMAKE_CXXFLAGS += -std=c++0x
+CONFIG += c++17
 
 # libParrotZik config
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../libParrotZik/release/ -lParrotZik

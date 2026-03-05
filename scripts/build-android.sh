@@ -32,7 +32,7 @@ echo "==> androiddeployqt..."
 "${ANDROID_DEPLOY_QT}" \
     --input  "${DEPLOY_JSON}" \
     --output "${BUILD_DIR}/android-build" \
-    --android-platform android-33 \
+    --android-platform android-35 \
     --jdk    "${JAVA_HOME}" \
     --gradle
 

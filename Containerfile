@@ -29,7 +29,7 @@ RUN aqt install-qt --base https://download.qt.io linux desktop 5.15.2 gcc_64 \
 RUN aqt install-qt --base https://download.qt.io linux android 5.15.2 android \
         -O /opt/Qt
 
-# --- Android cmdline-tools v9.0 ---
+# --- Android cmdline-tools v9.0 (bootstrap) ---
 ENV ANDROID_SDK_ROOT=/opt/android-sdk
 RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip \
@@ -41,16 +41,19 @@ RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
 
 ENV PATH="${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platform-tools:${PATH}"
 
-# --- Android SDK platform 33, build-tools 33.0.2, NDK r21e ---
-# NDK r21e (21.4.7075529) est la version officiellement supportée par Qt 5.15.2
+# --- Mise à jour cmdline-tools vers la dernière version via sdkmanager ---
 RUN yes | sdkmanager --licenses > /dev/null && \
-    sdkmanager \
-        "platform-tools" \
-        "platforms;android-33" \
-        "build-tools;33.0.2" \
-        "ndk;21.4.7075529"
+    sdkmanager "cmdline-tools;latest"
 
-ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk/21.4.7075529
+# --- Android SDK platform 35, build-tools 36.1.0, NDK r27 LTS ---
+# NDK r27 LTS (27.2.12479018) : version LTS 2024, meilleur support arm64
+RUN sdkmanager \
+        "platform-tools" \
+        "platforms;android-35" \
+        "build-tools;36.1.0" \
+        "ndk;27.2.12479018"
+
+ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk/27.2.12479018
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 COPY scripts/build-android.sh /usr/local/bin/build-android.sh

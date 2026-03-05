@@ -1,4 +1,5 @@
 #include "parrotziktweaker.h"
+#include <QRegularExpression>
 
 //using namespace QtBluetooth;
 
@@ -939,15 +940,16 @@ void ParrotZikTweeker::mprisInit()
 
 QStringList ParrotZikTweeker::discoveredMprisPlayer(){
 #if defined(Q_OS_LINUX) and !defined(Q_OS_ANDROID)
-    QRegExp rx("org.mpris.MediaPlayer2.*");
+    QRegularExpression rx("org\\.mpris\\.MediaPlayer2\\..*");
     QDBusConnection bus = QDBusConnection::sessionBus();
     QDBusInterface dbus_iface("org.freedesktop.DBus", "/org/freedesktop/DBus",
                               "org.freedesktop.DBus", bus);
     QStringList list=dbus_iface.call("ListNames").arguments().at(0).toStringList().filter(rx);
 
     //XXX Remove vlc entries specific to processes
-    foreach(QString str, list){
-        if(str.contains(QRegExp("org.mpris.MediaPlayer2.vlc-[0-9]*"))){
+    QRegularExpression vlcRx("org\\.mpris\\.MediaPlayer2\\.vlc-[0-9]*");
+    for (const QString &str : std::as_const(list)){
+        if(str.contains(vlcRx)){
             list.removeOne(str);
         }
     }

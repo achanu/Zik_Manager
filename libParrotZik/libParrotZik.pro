@@ -36,7 +36,7 @@ HEADERS += include/gain.h \
 
 INCLUDEPATH += include
 
-QMAKE_CXXFLAGS += -std=c++0x
+CONFIG += c++17
 
 # debug config
 CONFIG(debug, debug|release) {
