@@ -15,8 +15,6 @@ android {
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../android
 }
 
-QT += qt5compat
-
 SOURCES += src/main.cpp \
     src/systraymanager.cpp
 

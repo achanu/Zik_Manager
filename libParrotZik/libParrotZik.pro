@@ -11,8 +11,6 @@ unix:!android:!winrt {
     QT += dbus
 }
 
-QT += qt5compat
-
 TARGET = ParrotZik
 TEMPLATE = lib
 CONFIG += staticlib
