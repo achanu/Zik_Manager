@@ -12,6 +12,8 @@ unix:!android {
 
 android {
     QT += androidextras
+    ANDROID_ABIS = arm64-v8a
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../android
 }
 
 SOURCES += src/main.cpp \

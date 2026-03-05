@@ -7,12 +7,33 @@
 #include <parrotziktweaker.h>
 #include "systraymanager.h"
 
+#ifdef Q_OS_ANDROID
+#include <QtAndroid>
+#endif
+
 //#define DEBUG_VIEW
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     //QLoggingCategory::setFilterRules(QStringLiteral("qt.bluetooth* = true"));
+
+#ifdef Q_OS_ANDROID
+    // Android 12+ (API 31) requires runtime permission grants for Bluetooth.
+    // Request them synchronously before any Bluetooth activity starts.
+    {
+        const QStringList permissions = {
+            "android.permission.BLUETOOTH_SCAN",
+            "android.permission.BLUETOOTH_CONNECT"
+        };
+        auto results = QtAndroid::requestPermissionsSync(permissions);
+        if (results["android.permission.BLUETOOTH_CONNECT"] != QtAndroid::PermissionResult::Granted ||
+            results["android.permission.BLUETOOTH_SCAN"]    != QtAndroid::PermissionResult::Granted) {
+            qWarning("Bluetooth permissions denied — the application cannot function.");
+            return 1;
+        }
+    }
+#endif
 
     ParrotZikTweeker::declareQML();
 

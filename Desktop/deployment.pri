@@ -3,13 +3,7 @@ android-no-sdk {
     export(target.path)
     INSTALLS += target
 } else:android {
-    x86 {
-        target.path = /libs/x86
-    } else: armeabi-v7a {
-        target.path = /libs/armeabi-v7a
-    } else {
-        target.path = /libs/armeabi
-    }
+    target.path = /libs/arm64-v8a
     export(target.path)
     INSTALLS += target
 } else:unix {
