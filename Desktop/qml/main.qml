@@ -1,8 +1,8 @@
-import QtQuick 2.2
-import QtQuick.Controls 1.2
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtQuick.Controls
+import Qt5Compat.GraphicalEffects
 
-import QtQuick.Window 2.2
+import QtQuick.Window
 
 import ZikManager 1.0
 
@@ -64,23 +64,23 @@ Item {
     */
 
     Connections {
-             target: zik
-             onConnected: {
-                 if(stackView.depth == 1){
-                    var page;
-                    if(isFullview){
-                        page = (zik.model == "ZIK1") ? "pages_zik2/FirstPage.qml" : "pages_zik2/widescreen.qml";
-                    }else{
-                        page = "pages_zik2/FirstPage.qml";
-                    }
-                    stackView.replace(Qt.resolvedUrl(page));
-                 }else{
-                    stackView.pop();
-                 }
-             }
-             onDisconnected: {
-                 stackView.replace(Qt.resolvedUrl("pages_zik2/LoadingPage.qml"));
-             }
+        target: zik
+        function onConnected() {
+            if(stackView.depth == 1){
+                var page;
+                if(isFullview){
+                    page = (zik.model == "ZIK1") ? "pages_zik2/FirstPage.qml" : "pages_zik2/widescreen.qml";
+                }else{
+                    page = "pages_zik2/FirstPage.qml";
+                }
+                stackView.replace(Qt.resolvedUrl(page));
+            }else{
+                stackView.pop();
+            }
+        }
+        function onDisconnected() {
+            stackView.replace(Qt.resolvedUrl("pages_zik2/LoadingPage.qml"));
+        }
     }
 
     StackView {
@@ -88,73 +88,23 @@ Item {
         anchors.fill: parent
         initialItem: Qt.resolvedUrl("pages_zik2/LoadingPage.qml")
 
-        delegate: StackViewDelegate {
-            function getTransition(properties)
-            {
-                var transitionName = properties.enterItem.transitionName ? properties.enterItem.transitionName : properties.exitItem.transitionName ? properties.exitItem.transitionName : properties.name;
-                return this[transitionName];
-            }
-
-            function transitionFinished(properties)
-            {
-                properties.exitItem.x = 0;
-                properties.exitItem.y = 0;
-
-                properties.exitItem.opacity = 1
-            }
-
-            pushTransition: StackViewTransition {
-                PropertyAnimation {
-                    target: enterItem
-                    property: "x"
-                    from: target.width
-                    to: 0
-                    duration: 300
-                }
-                PropertyAnimation {
-                    target: exitItem
-                    property: "x"
-                    from: 0
-                    to: -target.width
-                    duration: 300
-                }
-            }
-
-            popTransition: StackViewTransition {
-                PropertyAnimation {
-                    target: enterItem
-                    property: "x"
-                    from: -target.width
-                    to: 0
-                    duration: 300
-                }
-                PropertyAnimation {
-                    target: exitItem
-                    property: "x"
-                    from: 0
-                    to: target.width
-                    duration: 300
-                }
-            }
-
-            replaceTransition: fadeTransition
-
-            property Component fadeTransition: StackViewTransition {
-                PropertyAnimation {
-                    target: enterItem
-                    property: "opacity"
-                    from: 0
-                    to: target.opacity
-                    duration: 300
-                }
-                PropertyAnimation {
-                    target: exitItem
-                    property: "opacity"
-                    from: target.opacity
-                    to: 0
-                    duration: 300
-                }
-            }
+        pushEnter: Transition {
+            XAnimator { from: stackView.width; to: 0; duration: 300; easing.type: Easing.OutCubic }
+        }
+        pushExit: Transition {
+            XAnimator { from: 0; to: -stackView.width; duration: 300; easing.type: Easing.OutCubic }
+        }
+        popEnter: Transition {
+            XAnimator { from: -stackView.width; to: 0; duration: 300; easing.type: Easing.OutCubic }
+        }
+        popExit: Transition {
+            XAnimator { from: 0; to: stackView.width; duration: 300; easing.type: Easing.OutCubic }
+        }
+        replaceEnter: Transition {
+            OpacityAnimator { from: 0; to: 1; duration: 300 }
+        }
+        replaceExit: Transition {
+            OpacityAnimator { from: 1; to: 0; duration: 300 }
         }
     }
 

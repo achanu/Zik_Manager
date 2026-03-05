@@ -1,8 +1,7 @@
-import QtQuick 2.3
-import QtQuick.Controls 1.3
-import QtQuick.Layouts 1.1
-import QtQuick.Controls.Styles 1.3
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 
 Item {
 
@@ -11,7 +10,7 @@ Item {
 
     property alias field: f
     property alias text: f.text
-    property alias textColor: f.textColor
+    property alias textColor: f.color
     property alias readOnly: f.readOnly
 
     property string placeholder: ""
@@ -25,7 +24,7 @@ Item {
 
     TextField {
         id: f
-        textColor: "white"
+        color: "white"
 
         anchors.top: parent.top
         anchors.margins: 0
@@ -33,12 +32,9 @@ Item {
         height: ref.paintedHeight + 10
 
         placeholderText: parent.label + ": " + parent.placeholder
-
-        style: TextFieldStyle{
-            padding.left: 0
-            background: Item { }
-            placeholderTextColor: "lightgrey"
-        }
+        placeholderTextColor: "lightgrey"
+        leftPadding: 0
+        background: Item { }
     }
 
     CustomSeparator {
@@ -59,7 +55,7 @@ Item {
         visible: f.text.length != 0
 
         text: parent.label
-        color: f.textColor
+        color: f.color
 
         opacity: 0.5
     }

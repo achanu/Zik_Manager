@@ -1,6 +1,6 @@
-import QtQuick 2.2
-import QtQuick.Controls 1.1
-import QtQuick.Layouts 1.1
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import ZikManager 1.0
 
 import "../elements/desktop"
@@ -281,10 +281,10 @@ Item {
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
 
-                    minimumValue: 40
-                    maximumValue: 280
+                    from: 40
+                    to: 280
                     stepSize: 10
-                    updateValueWhileDragging: true
+                    live: true
 
                     value: zik.a2dpDelay
 

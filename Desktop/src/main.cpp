@@ -8,7 +8,9 @@
 #include "systraymanager.h"
 
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
+#include <QPermissions>
+#include <QEventLoop>
+#include <QCoreApplication>
 #endif
 
 //#define DEBUG_VIEW
@@ -20,18 +22,18 @@ int main(int argc, char *argv[])
 
 #ifdef Q_OS_ANDROID
     // Android 12+ (API 31) requires runtime permission grants for Bluetooth.
-    // Request them synchronously before any Bluetooth activity starts.
+    // Request them before any Bluetooth activity starts (Qt6 async API).
     {
-        const QStringList permissions = {
-            "android.permission.BLUETOOTH_SCAN",
-            "android.permission.BLUETOOTH_CONNECT"
-        };
-        auto results = QtAndroid::requestPermissionsSync(permissions);
-        if (results["android.permission.BLUETOOTH_CONNECT"] != QtAndroid::PermissionResult::Granted ||
-            results["android.permission.BLUETOOTH_SCAN"]    != QtAndroid::PermissionResult::Granted) {
-            qWarning("Bluetooth permissions denied — the application cannot function.");
-            return 1;
-        }
+        QBluetoothPermission btPermission;
+        QEventLoop loop;
+        qApp->requestPermission(btPermission, [&loop](const QPermission &p) {
+            if (p.status() != Qt::PermissionStatus::Granted) {
+                qWarning("Bluetooth permissions denied — the application cannot function.");
+                QCoreApplication::exit(1);
+            }
+            loop.quit();
+        });
+        loop.exec();
     }
 #endif
 

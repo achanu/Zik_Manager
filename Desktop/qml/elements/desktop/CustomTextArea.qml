@@ -1,8 +1,7 @@
-import QtQuick 2.2
-import QtQuick.Controls 1.3
-import QtQuick.Controls.Styles 1.3
-import QtQuick.Layouts 1.1
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 
 Item{
     height: area.contentHeight + description.contentHeight + 2
@@ -18,20 +17,19 @@ Item{
         height: contentHeight
         readOnly: parent.readOnly
 
-        backgroundVisible: false
-        frameVisible: false
-        verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-
         text: parent.text
 
-        style: TextAreaStyle {
-            textColor: "white"
-            selectionColor: "transparent"
-            selectedTextColor: "white"
-            backgroundColor: "transparent"
-            textMargin: 0
-            font: description.font
-        }
+        color: "white"
+        selectionColor: "transparent"
+        selectedTextColor: "white"
+        background: null
+        leftPadding: 0
+        rightPadding: 0
+        topPadding: 0
+        bottomPadding: 0
+        font: description.font
+
+        ScrollBar.vertical.policy: ScrollBar.AlwaysOff
     }
     Text {
         id: description

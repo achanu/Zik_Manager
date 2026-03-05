@@ -1,5 +1,6 @@
 #include "parrotziktweaker.h"
 #include <QRegularExpression>
+#include <QRandomGenerator>
 
 //using namespace QtBluetooth;
 
@@ -119,23 +120,23 @@ QList<DevStruct> ParrotZikTweeker::getKnownDevices() {
 
 #ifdef Q_OS_ANDROID
     // Query via Android Java API.
-    QAndroidJniObject adapter=QAndroidJniObject::callStaticObjectMethod("android/bluetooth/BluetoothAdapter","getDefaultAdapter","()Landroid/bluetooth/BluetoothAdapter;"); // returns a BluetoothAdapter
+    QJniObject adapter=QJniObject::callStaticObjectMethod("android/bluetooth/BluetoothAdapter","getDefaultAdapter","()Landroid/bluetooth/BluetoothAdapter;"); // returns a BluetoothAdapter
     if (checkException("BluetoothAdapter.getDefaultAdapter()",&adapter)) {
         return result;
     }
-    QAndroidJniObject pairedDevicesSet=adapter.callObjectMethod("getBondedDevices","()Ljava/util/Set;"); // returns a Set<BluetoothDevice>
+    QJniObject pairedDevicesSet=adapter.callObjectMethod("getBondedDevices","()Ljava/util/Set;"); // returns a Set<BluetoothDevice>
     if (checkException("BluetoothAdapter.getBondedDevices()",&pairedDevicesSet)) {
         return result;
     }
     jint size=pairedDevicesSet.callMethod<jint>("size");
     checkException("Set<BluetoothDevice>.size()", &pairedDevicesSet);
     if (size>0) {
-        QAndroidJniObject iterator=pairedDevicesSet.callObjectMethod("iterator","()Ljava/util/Iterator;"); // returns an Iterator<BluetoothDevice>
+        QJniObject iterator=pairedDevicesSet.callObjectMethod("iterator","()Ljava/util/Iterator;"); // returns an Iterator<BluetoothDevice>
         if (checkException("Set<BluetoothDevice>.iterator()",&iterator)) {
             return result;
         }
         for (int i=0; i<size; i++) {
-            QAndroidJniObject dev=iterator.callObjectMethod("next","()Ljava/lang/Object;"); // returns a BluetoothDevice
+            QJniObject dev=iterator.callObjectMethod("next","()Ljava/lang/Object;"); // returns a BluetoothDevice
             if (checkException("Iterator<BluetoothDevice>.next()",&dev)) {
                 continue;
             }
@@ -149,21 +150,21 @@ QList<DevStruct> ParrotZikTweeker::getKnownDevices() {
 
             if(address.toLower().startsWith("90:03:b7") || address.toLower().startsWith("a0:14:3d") || address.toLower().startsWith("f0:18:e5:9f") || address.toLower().startsWith("88:82:b4")){
                 qDebug() << "found bonded parrot device";
-                QAndroidJniObject UuidsParcel = dev.callObjectMethod("getUuids", "()[Landroid/os/ParcelUuid;");
+                QJniObject UuidsParcel = dev.callObjectMethod("getUuids", "()[Landroid/os/ParcelUuid;");
                 if (checkException("BluetoothDevice.getUuids()",&UuidsParcel)) {
                     qDebug("shit");
                     return result;
                 }
 
                 const jobjectArray uuidsArray = UuidsParcel.object<jobjectArray>();
-                QAndroidJniEnvironment qjniEnv;
+                QJniEnvironment qjniEnv;
                 const int n = qjniEnv->GetArrayLength(uuidsArray);
 
                 //qDebug() << "cool. " << n << " elements";
 
                 for(int i=0; i< n;i++){
                     jobject localRef = qjniEnv->GetObjectArrayElement(uuidsArray, i);
-                    QAndroidJniObject uuidpar_o = QAndroidJniObject::fromLocalRef(localRef);
+                    QJniObject uuidpar_o = QJniObject::fromLocalRef(localRef);
 
                     QString uuidpar_s = uuidpar_o.callObjectMethod("toString", "()Ljava/lang/String;").toString();
                     //if (checkException("BluetoothDevice.getUuids()",&UuidsParcel)) {
@@ -174,7 +175,7 @@ QList<DevStruct> ParrotZikTweeker::getKnownDevices() {
                     device_s.uuids.append(uuidpar_s);
 
                     /*
-                    QAndroidJniObject uuid_o = uuidpar_o.callObjectMethod("getUuid", "()Ljava/util/UUID;");
+                    QJniObject uuid_o = uuidpar_o.callObjectMethod("getUuid", "()Ljava/util/UUID;");
 
                     qDebug() << "very nice.";
 
@@ -198,8 +199,8 @@ QList<DevStruct> ParrotZikTweeker::getKnownDevices() {
 }
 
 #ifdef Q_OS_ANDROID
-bool ParrotZikTweeker::checkException(const char* method, const QAndroidJniObject* obj) {
-    static QAndroidJniEnvironment env;
+bool ParrotZikTweeker::checkException(const char* method, const QJniObject* obj) {
+    static QJniEnvironment env;
     bool result=false;
     if (env->ExceptionCheck()) {
         qCritical("Exception in %s",method);
@@ -611,8 +612,7 @@ void ParrotZikTweeker::commonInit()
     counter_received = 0;
     counter_timeout = 0;
 
-    QTime time = QTime::currentTime();
-    qsrand((uint)time.msec());
+    // QRandomGenerator auto-seeds; no manual seeding needed in Qt6.
 
     presetModel = new PresetModel(this);
 
@@ -665,7 +665,7 @@ void ParrotZikTweeker::setDefaultCapabilities()
 
     modelNumber = m_model == "ZIK1" ? 1 : m_model == "ZIK2" ? 3 : m_model == "ZIK3" ? 5 : 3;
 
-    m_capabilities = 0;
+    m_capabilities = {};
 
     switch(modelNumber){
         case 5: // zik 3
@@ -907,7 +907,7 @@ void ParrotZikTweeker::setBluetoothOn(const bool &enable)
 
 int ParrotZikTweeker::generateRandom(int low, int high)
 {
-    return qrand() % ((high + 1) - low) + low;
+    return QRandomGenerator::global()->bounded(low, high + 1);
 }
 
 void ParrotZikTweeker::mprisInit()

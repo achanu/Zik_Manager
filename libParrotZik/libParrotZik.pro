@@ -11,9 +11,7 @@ unix:!android:!winrt {
     QT += dbus
 }
 
-android {
-    QT += androidextras
-}
+QT += qt5compat
 
 TARGET = ParrotZik
 TEMPLATE = lib

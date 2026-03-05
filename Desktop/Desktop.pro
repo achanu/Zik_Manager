@@ -11,10 +11,11 @@ unix:!android {
 }
 
 android {
-    QT += androidextras
     ANDROID_ABIS = arm64-v8a
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../android
 }
+
+QT += qt5compat
 
 SOURCES += src/main.cpp \
     src/systraymanager.cpp

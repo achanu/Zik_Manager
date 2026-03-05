@@ -23,8 +23,8 @@
 #include <QtQml/QtQml>
 
 #if defined(Q_OS_ANDROID)
-#include <QtAndroidExtras/QAndroidJniObject>
-#include <QtAndroidExtras/QAndroidJniEnvironment>
+#include <QJniObject>
+#include <QJniEnvironment>
 #endif
 
 
@@ -40,11 +40,6 @@
 
 #if defined(Q_OS_LINUX) or defined(Q_OS_MACOS)
 #include <unistd.h>
-#endif
-
-#if defined(Q_OS_ANDROID)
-#include <QtAndroidExtras/QAndroidJniObject>
-#include <QtAndroidExtras/QAndroidJniEnvironment>
 #endif
 
 struct DevStruct {
@@ -135,7 +130,6 @@ class ParrotZikTweeker: public QObject
 
     Q_PROPERTY(int autoPowerOff READ autoPowerOff WRITE setAutoPowerOff NOTIFY autoPowerOffChanged)
 
-    Q_ENUM(Capabilities)
 public:
     ParrotZikTweeker();
     ParrotZikTweeker(QString btAddr);
@@ -166,6 +160,7 @@ public:
         BatteryNotification = 524288
     };
     Q_DECLARE_FLAGS(Capabilities, Capability)
+    Q_FLAG(Capabilities)
 
     static void declareQML() {
         qmlRegisterType<ParrotZikTweeker>("ZikManager", 1, 0, "Zik");
@@ -495,7 +490,7 @@ private:
     void setDefaultCapabilities();
     QList<DevStruct> getKnownDevices();
     #ifdef Q_OS_ANDROID
-    bool checkException(const char* method, const QAndroidJniObject* obj);
+    bool checkException(const char* method, const QJniObject* obj);
     #endif
 
 

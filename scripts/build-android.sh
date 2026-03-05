@@ -3,8 +3,8 @@
 # Produit /output/ZikManager.apk (APK debug signé avec la debug keystore Java).
 set -e
 
-QMAKE=/opt/Qt/5.15.2/android/bin/qmake
-ANDROID_DEPLOY_QT=/opt/Qt/5.15.2/android/bin/androiddeployqt
+QMAKE=/opt/Qt/6.8.1/android_arm64_v8a/bin/qmake
+ANDROID_DEPLOY_QT=/opt/Qt/6.8.1/gcc_64/bin/androiddeployqt
 BUILD_DIR=/build
 OUTPUT_DIR=/output
 

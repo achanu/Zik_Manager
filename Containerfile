@@ -3,9 +3,9 @@ FROM ubuntu:22.04
 ARG DEBIAN_FRONTEND=noninteractive
 
 # --- Dépendances système ---
-# OpenJDK 11 : requis par Gradle (Qt 5.15 incompatible avec Java 17)
+# OpenJDK 17 : requis par Gradle 8.x utilisé par Qt 6.8
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        openjdk-11-jdk-headless \
+        openjdk-17-jdk-headless \
         python3-pip \
         wget \
         unzip \
@@ -13,21 +13,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # --- aqtinstall : installeur Qt headless ---
-# v3.x a changé la résolution des manifestes XML et ne sait plus parser Qt 5.15.2.
-# On épingle à v2.2.3, dernière version stable compatible avec Qt 5.15.2 Android.
-RUN pip3 install --no-cache-dir "aqtinstall==2.2.3"
+RUN pip3 install --no-cache-dir aqtinstall
 
-# --- Qt 5.15.2 hôte Linux : moc, rcc, androiddeployqt ---
-RUN aqt install-qt --base https://download.qt.io linux desktop 5.15.2 gcc_64 \
+# --- Qt 6.8.1 hôte Linux : moc, rcc, androiddeployqt ---
+RUN aqt install-qt linux desktop 6.8.1 linux_gcc_64 \
         -O /opt/Qt
 
-# --- Qt 5.15.2 cible Android (multi-ABI) ---
-# Les paquets per-ABI (android_arm64_v8a) ont été retirés du dépôt en ligne Qt.
-# On installe le paquet multi-ABI "android" ; qmake restreint la sortie à arm64-v8a
-# via ANDROID_ABIS=arm64-v8a (déjà configuré dans Desktop.pro).
-# Le paquet "android" inclut tous les modules (bluetooth, svg, etc.) — pas d'étape séparée.
-RUN aqt install-qt --base https://download.qt.io linux android 5.15.2 android \
+# --- Qt 6.8.1 cible Android arm64-v8a ---
+# Qt 6 revient aux paquets per-ABI ; pas besoin de multi-ABI.
+RUN aqt install-qt linux android 6.8.1 android_arm64_v8a \
         -O /opt/Qt
+
+# --- Module Qt5Compat : remplace QtGraphicalEffects (FastBlur, ColorOverlay…) ---
+RUN aqt install-qt linux android 6.8.1 android_arm64_v8a \
+        -m qt5compat -O /opt/Qt
+RUN aqt install-qt linux desktop 6.8.1 linux_gcc_64 \
+        -m qt5compat -O /opt/Qt
 
 # --- Android cmdline-tools v9.0 (bootstrap) ---
 ENV ANDROID_SDK_ROOT=/opt/android-sdk
@@ -46,7 +47,6 @@ RUN yes | sdkmanager --licenses > /dev/null && \
     sdkmanager "cmdline-tools;latest"
 
 # --- Android SDK platform 35, build-tools 36.1.0, NDK r27 LTS ---
-# NDK r27 LTS (27.2.12479018) : version LTS 2024, meilleur support arm64
 RUN sdkmanager \
         "platform-tools" \
         "platforms;android-35" \
@@ -54,7 +54,7 @@ RUN sdkmanager \
         "ndk;27.2.12479018"
 
 ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk/27.2.12479018
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 COPY scripts/build-android.sh /usr/local/bin/build-android.sh
 RUN chmod +x /usr/local/bin/build-android.sh
