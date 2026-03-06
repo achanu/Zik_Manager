@@ -16,7 +16,7 @@ QHash <int, QByteArray> PresetModel::roleNames() const
     return roles;
 }
 
-int PresetModel::columnCount(const QModelIndex &parent) const
+int PresetModel::columnCount(const QModelIndex &) const
 {
     return 28;
 }
@@ -185,7 +185,7 @@ void PresetModel::saveToFile()
 
     //qDebug() << "Saving presets to file. name: " << docobj.value("username").toString() << " / counter: " << docobj.value("counter").toVariant().toInt();
 
-    QString datalocation = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    QString datalocation = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     QDir datadir(datalocation);
     //qDebug() << datadir.absolutePath();
 
@@ -209,7 +209,7 @@ void PresetModel::saveToFile()
 void PresetModel::initPresets(QString remoteUsername, int remoteCounter)
 {
     QJsonDocument doc;
-    QString datalocation = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    QString datalocation = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     QDir datadir(datalocation);
 
     if(!datadir.exists()) {

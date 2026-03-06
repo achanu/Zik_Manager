@@ -1,10 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
 
-import "../elements"
-import "../elements/desktop"
+import "qrc:/elements"
+import "qrc:/elements/desktop"
 
 Item {
     id: firstPage
@@ -22,11 +21,11 @@ Item {
          textColor: "white"
 
          onClicked: {
-             firstPage.Stack.view.pop();
+             firstPage.StackView.view.pop();
          }
 
          function popPage() {
-             firstPage.Stack.view.pop();
+             firstPage.StackView.view.pop();
          }
      }
 
@@ -59,16 +58,6 @@ Item {
 
         handleRadius: width / 10
         handleOpacity: 0.5
-
-        RadialGradient {
-            anchors.fill: parent
-            //source: parent
-
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "black" }
-                GradientStop { position: 0.5; color: "transparent" }
-            }
-        }
 
         function updateThumbEqua() {
 

@@ -59,8 +59,5 @@ RUN sdkmanager \
 ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk/27.2.12479018
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
-COPY scripts/build-android.sh /usr/local/bin/build-android.sh
-RUN chmod +x /usr/local/bin/build-android.sh
-
 WORKDIR /project
-CMD ["/usr/local/bin/build-android.sh"]
+CMD ["/bin/bash", "/project/scripts/build-android.sh"]

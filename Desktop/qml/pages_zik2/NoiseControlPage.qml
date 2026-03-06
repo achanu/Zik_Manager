@@ -3,8 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import ZikManager 1.0
 
-import "../elements/"
-import "../elements/desktop"
+import "qrc:/elements"
+import "qrc:/elements/desktop"
 
 
 Item {
@@ -27,7 +27,7 @@ Item {
         }
 
         function popPage() {
-            firstPage.Stack.view.pop();
+            firstPage.StackView.view.pop();
         }
     }
 

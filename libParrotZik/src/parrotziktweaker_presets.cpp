@@ -16,7 +16,7 @@ void ParrotZikTweeker::savePreset(QString name, QString album, bool linkAlbum, Q
     int room = roomSize() == "silent" ? 0 : roomSize() == "living" ? 1 : roomSize() == "jazz" ? 2 : 3;
 
 
-    int modelNumber;
+    int modelNumber = 0;
 
     if(model() == "ZIK1"){
         modelNumber = 1;
@@ -58,7 +58,7 @@ void ParrotZikTweeker::saveQuickPreset(QString name, QString album, bool linkAlb
                                       0.3, 0.8, 1, 0.8, 0.3,
                                       gain1, gain2, gain3, gain4, gain5);
 
-    int modelNumber;
+    int modelNumber = 0;
     if(model() == "ZIK1"){
         modelNumber = 1;
     }else if(model() == "ZIK2"){

@@ -10,14 +10,33 @@ OUTPUT_DIR=/output
 
 mkdir -p "${BUILD_DIR}" "${OUTPUT_DIR}"
 
-echo "==> qmake..."
-cd "${BUILD_DIR}"
-"${QMAKE}" /project/zik_manager.pro \
+# --- Build libParrotZik (static lib) ---
+echo "==> qmake libParrotZik..."
+mkdir -p "${BUILD_DIR}/libParrotZik"
+cd "${BUILD_DIR}/libParrotZik"
+"${QMAKE}" /project/libParrotZik/libParrotZik.pro \
     -spec android-clang \
     CONFIG+=release \
     ANDROID_ABIS=arm64-v8a
 
-echo "==> make..."
+echo "==> make libParrotZik..."
+make -j"$(nproc)"
+
+# Qt6 Android names the static lib libParrotZik_arm64-v8a.a — copy it
+# to libParrotZik.a so Desktop's -lParrotZik linker flag finds it.
+cp "${BUILD_DIR}/libParrotZik/libParrotZik_arm64-v8a.a" \
+   "${BUILD_DIR}/libParrotZik/libParrotZik.a"
+
+# --- Build Desktop app ---
+echo "==> qmake Desktop..."
+mkdir -p "${BUILD_DIR}/Desktop"
+cd "${BUILD_DIR}/Desktop"
+"${QMAKE}" /project/Desktop/Desktop.pro \
+    -spec android-clang \
+    CONFIG+=release \
+    ANDROID_ABIS=arm64-v8a
+
+echo "==> make Desktop..."
 make -j"$(nproc)"
 
 # Copie la .so compilée dans {android-build}/libs/arm64-v8a/ où androiddeployqt la cherche.
@@ -33,7 +52,9 @@ echo "==> androiddeployqt..."
     --input  "${DEPLOY_JSON}" \
     --output "${BUILD_DIR}/android-build" \
     --android-platform android-35 \
+    --min-sdk-version 31 \
     --jdk    "${JAVA_HOME}" \
+    --qml-import-paths /opt/Qt/6.8.1/android_arm64_v8a/qml \
     --gradle
 
 APK="${BUILD_DIR}/android-build/build/outputs/apk/debug/android-build-debug.apk"

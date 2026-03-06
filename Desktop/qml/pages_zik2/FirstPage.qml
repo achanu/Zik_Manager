@@ -5,8 +5,8 @@ import QtQuick.Window
 
 import ZikManager 1.0
 
-import "../elements/"
-import "../elements/desktop"
+import "qrc:/elements"
+import "qrc:/elements/desktop"
 
 Item {
     id: firstPage
@@ -37,24 +37,24 @@ Item {
 
     Connections {
         target: zik
-        onEqualizerChanged: {
+        function onEqualizerChanged() {
             if(zik.capabilities & Zik.ThumbEqualizer){
                 eq.checked = zik.equalizer == "true" ? true : false;
             }else{
                 zik1eq.checked = (zik.equalizer == "true") ? true : false;
             }
         }
-        onNcEnabledChanged: {
+        function onNcEnabledChanged() {
             if(zik.capabilities & Zik.StreetMode){
                 nc.checked = zik.ncEnabled == "true" ? true : false;
             }
         }
-        onAncChanged: {
+        function onAncChanged() {
             if(!(zik.capabilities & Zik.StreetMode)){
                 nc.checked = zik.anc == "true" ? true : false;
             }
         }
-        onConcertHallChanged: {
+        function onConcertHallChanged() {
             ca.checked =  zik.concertHall == "true" ? true : false;
         }
     }
@@ -106,7 +106,7 @@ Item {
             anchors.fill: parent
 
             onClicked: {
-                firstPage.Stack.view.push({item: Qt.resolvedUrl("SettingsPage.qml"), properties: {baseMargin: firstPage.baseMargin}})
+                firstPage.StackView.view.push(Qt.resolvedUrl("SettingsPage.qml"), {baseMargin: firstPage.baseMargin})
             }
         }
     }
@@ -144,7 +144,7 @@ Item {
 
             iconSource: Qt.resolvedUrl("arrow.svg")
             iconColor: "white"
-            iconOpacity: zik.capabilities & Zik.StreetMode ? 0.4 : 0.0
+            iconOpacity: zik.capabilities & Zik.StreetMode ? 1.0 : 0.0
 
             checked: (zik.capabilities & Zik.StreetMode) ? (zik.ncEnabled == "true" ? true : false) : (zik.anc == "true" ? true : false)
             onCheckedChanged: {
@@ -165,7 +165,7 @@ Item {
 
             onLabelClicked: {
                 if(zik.capabilities & Zik.StreetMode){
-                    firstPage.Stack.view.push({item: Qt.resolvedUrl("NoiseControlPage.qml"), properties: {producerMode: 0, baseMargin: firstPage.baseMargin}});
+                    firstPage.StackView.view.push(Qt.resolvedUrl("NoiseControlPage.qml"), {producerMode: 0, baseMargin: firstPage.baseMargin});
                 }
             }
         }
@@ -196,7 +196,7 @@ Item {
 
             iconSource: Qt.resolvedUrl("arrow.svg")
             iconColor: "white"
-            iconOpacity: 0.4
+            iconOpacity: 1.0
 
             onCheckedChanged: {
                 if(checked){
@@ -207,7 +207,7 @@ Item {
             }
 
             onLabelClicked: {
-                firstPage.Stack.view.push({item: Qt.resolvedUrl("ConcertHallPage.qml"), properties: {producerMode: 0, baseMargin: firstPage.baseMargin}})
+                firstPage.StackView.view.push(Qt.resolvedUrl("ConcertHallPage.qml"), {producerMode: 0, baseMargin: firstPage.baseMargin})
             }
 
         }
@@ -238,7 +238,7 @@ Item {
 
             iconSource: Qt.resolvedUrl("arrow.svg")
             iconColor: "white"
-            iconOpacity: 0.4
+            iconOpacity: 1.0
 
             checked: zik.equalizer == "true" ? true : false
             onCheckedChanged: {
@@ -250,7 +250,7 @@ Item {
             }
 
             onLabelClicked: {
-                firstPage.Stack.view.push({item: Qt.resolvedUrl("EqualizerPage.qml"), properties: {baseMargin: firstPage.baseMargin}});
+                firstPage.StackView.view.push(Qt.resolvedUrl("EqualizerPage.qml"), {baseMargin: firstPage.baseMargin});
             }
         }
 
@@ -362,7 +362,7 @@ Item {
 
         Connections {
             target: zik
-            onSourceChanged: {
+            function onSourceChanged() {
                 if(zik.source == "a2dp"){
                     console.log("Metapanel: Switch from line-in to A2DP detected. Starting timer.");
                     t_meta_source.start();
@@ -374,7 +374,7 @@ Item {
                     metapanel.opacity = 0.0;
                 }
             }
-            onPlayingChanged: {
+            function onPlayingChanged() {
                 if(zik.playing == false){
                     console.log("Metapanel: Paused detected. Starting timer.");
                     t_meta_playing.start();

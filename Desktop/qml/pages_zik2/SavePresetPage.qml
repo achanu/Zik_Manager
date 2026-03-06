@@ -1,9 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
 
-import "../elements/desktop"
+import "qrc:/elements/desktop"
 
 Item {
     id: firstPage
@@ -19,7 +18,7 @@ Item {
          textColor: "white"
 
          onClicked: {
-             firstPage.Stack.view.pop();
+             firstPage.StackView.view.pop();
          }
     }
 
@@ -34,7 +33,7 @@ Item {
          textColor: "white"
 
          onClicked: {
-             firstPage.Stack.view.pop({item: firstPage.Stack.view.get(1, true)});
+             firstPage.StackView.view.pop(firstPage.StackView.view.get(1));
              zik.savePreset(nameField.text, albumField.text, albumEnabled.checked, artistField.text, artistEnabled.checked, genreField.text, genreEnabled.checked, songField.text, songEnabled.checked, false);
          }
     }

@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>elements/ThumbEqua_src.svg</file>
+        <file>elements/qmldir</file>
         <file>elements/ThumbEqualizer.qml</file>
         <file>elements/ConcertHall.qml</file>
         <file>elements/BatteryStatus.qml</file>

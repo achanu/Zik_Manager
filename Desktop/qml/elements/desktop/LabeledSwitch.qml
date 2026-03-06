@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
+import QtQuick
 
 MouseArea {
     id: labeledSwitch
@@ -28,8 +28,7 @@ MouseArea {
     property alias font: label.font
 
     property int baseMargin: 5
-
-    width: sw.width + label.paintedWidth + baseMargin * 2
+    property int arrowSize: 20
 
     onCheckedChanged: {
         sw.checked = checked;
@@ -83,7 +82,10 @@ MouseArea {
 
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: sw.right
-        anchors.margins: labeledSwitch.baseMargin
+        anchors.right: parent.right
+        anchors.leftMargin: labeledSwitch.baseMargin
+        anchors.rightMargin: labeledSwitch.arrowSize + labeledSwitch.baseMargin * 2
+        elide: Text.ElideRight
     }
 
     Rectangle {
@@ -96,32 +98,21 @@ MouseArea {
     }
 
     Image {
+        z: 2
         id: icon
         source: parent.iconSource
         mipmap: true
         sourceSize.width: 500
         sourceSize.height: 500
 
-        visible: false
-    }
-
-    ColorOverlay {
-        id: overlay
-
         anchors.right: parent.right
         anchors.margins: labeledSwitch.baseMargin
-
         anchors.verticalCenter: parent.verticalCenter
 
+        height: labeledSwitch.arrowSize
+        width: labeledSwitch.arrowSize
 
-        height: sw.height / 2
-        width: height
-
-        source: icon
-        color: parent.iconColor
-
-        visible: icon.source != ""
-
+        visible: source != ""
         opacity: parent.iconOpacity
     }
 

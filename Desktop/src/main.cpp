@@ -1,23 +1,28 @@
+#ifdef __ANDROID__
+#include <QGuiApplication>
+#include <QPermissions>
+#include <QEventLoop>
+#include <QCoreApplication>
+#else
 #include <QApplication>
+#include "systraymanager.h"
+#endif
+
 #include <QQmlApplicationEngine>
 #include <QtQml>
 #include <QQuickView>
 #include <QObject>
-#include <QSystemTrayIcon>
 #include <parrotziktweaker.h>
-#include "systraymanager.h"
-
-#ifdef Q_OS_ANDROID
-#include <QPermissions>
-#include <QEventLoop>
-#include <QCoreApplication>
-#endif
 
 //#define DEBUG_VIEW
 
 int main(int argc, char *argv[])
 {
+#ifdef __ANDROID__
+    QGuiApplication app(argc, argv);
+#else
     QApplication app(argc, argv);
+#endif
     //QLoggingCategory::setFilterRules(QStringLiteral("qt.bluetooth* = true"));
 
 #ifdef Q_OS_ANDROID
@@ -74,18 +79,30 @@ int main(int argc, char *argv[])
     debugview.setSource(QUrl(QStringLiteral("qrc:///debugmain.qml")));
 #endif
 
-    view.setSource(QUrl(QStringLiteral("qrc:///main.qml")));
+    view.engine()->addImportPath(QStringLiteral("qrc:/"));
+    QObject::connect(view.engine(), &QQmlEngine::warnings,
+        [](const QList<QQmlError> &warnings) {
+            for (const QQmlError &w : warnings)
+                qCritical("QML: %s", qPrintable(w.toString()));
+        });
 
     QObject::connect(&view, SIGNAL(visibleChanged(bool)), tweaker, SLOT(setApplicationVisible(bool)));
 	QObject::connect(&view, SIGNAL(closing(QQuickCloseEvent*)), tweaker, SLOT(closeBTConnectionsBeforeQuit()));
 
 #ifdef Q_OS_ANDROID
+    view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.show();
+    view.setSource(QUrl(QStringLiteral("qrc:///main.qml")));
+    for (const QQmlError &e : view.errors())
+        qCritical("QML load error: %s", qPrintable(e.toString()));
 #else
     view.setWidth(275);
     view.setHeight(418);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.show();
+    view.setSource(QUrl(QStringLiteral("qrc:///main.qml")));
+    for (const QQmlError &e : view.errors())
+        qCritical("QML load error: %s", qPrintable(e.toString()));
 
 #if defined(DEBUG_VIEW)
     debugview.setWidth(275);

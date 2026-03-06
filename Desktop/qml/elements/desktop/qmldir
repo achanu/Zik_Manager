@@ -1,0 +1,8 @@
+CustomButton 1.0 CustomButton.qml
+CustomSwitch 1.0 CustomSwitch.qml
+LabeledSwitch 1.0 LabeledSwitch.qml
+CustomTextField 1.0 CustomTextField.qml
+CustomTextArea 1.0 CustomTextArea.qml
+CustomSeparator 1.0 CustomSeparator.qml
+IconedLabel 1.0 IconedLabel.qml
+ThreeStateSwitch 1.0 ThreeStateSwitch.qml

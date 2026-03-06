@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
 
 Item {
 
@@ -28,7 +27,7 @@ Item {
 
         anchors.top: parent.top
         anchors.margins: 0
-        width: ref.paintedWidth + 10
+        width: parent.width
         height: ref.paintedHeight + 10
 
         placeholderText: parent.label + ": " + parent.placeholder
@@ -41,7 +40,7 @@ Item {
         id: sep
         anchors.top: f.bottom
         anchors.margins: -4
-        width: ref.paintedWidth
+        width: parent.width
         height: visible ? 1 : 0
 
         visible: !readOnly

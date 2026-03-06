@@ -1,14 +1,12 @@
 import QtQuick
-import Qt5Compat.GraphicalEffects
 import QtQuick.Controls
-import "../elements/desktop"
+import "qrc:/elements/desktop"
 
 Item {
 
     property string transitionName: "fadeTransition"
 
-    width: parent.width
-    height: parent.height
+    anchors.fill: parent
 
     CustomButton {
 

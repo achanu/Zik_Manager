@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
+import QtQuick
 
 MouseArea {
     id: labeledSwitch
@@ -124,26 +124,14 @@ MouseArea {
         sourceSize.width: 500
         sourceSize.height: 500
 
-        visible: false
-    }
-
-    ColorOverlay {
-        id: overlay
-
         anchors.right: parent.right
         anchors.margins: labeledSwitch.baseMargin
-
         anchors.verticalCenter: parent.verticalCenter
-
 
         height: (bg.height-10) / 2
         width: height
 
-        source: icon
-        color: parent.iconColor
-
-        visible: icon.source != ""
-
+        visible: source != ""
         opacity: parent.iconOpacity
     }
 

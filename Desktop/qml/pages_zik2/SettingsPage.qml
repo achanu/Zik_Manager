@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import ZikManager 1.0
 
-import "../elements/desktop"
+import "qrc:/elements/desktop"
 
 Item {
     id: firstPage
@@ -12,10 +12,10 @@ Item {
 
     Connections {
         target: zik
-        onTtsEnabledChanged: {
+        function onTtsEnabledChanged() {
             tts.checked = zik.ttsEnabled;
         }
-        onFlightModeEnabledChanged: {
+        function onFlightModeEnabledChanged() {
             flight.checked = zik.flightModeEnabled;
         }
     }
@@ -31,11 +31,11 @@ Item {
         textColor: "white"
 
         onClicked: {
-            firstPage.Stack.view.pop();
+            firstPage.StackView.view.pop();
         }
 
         function popPage() {
-            firstPage.Stack.view.pop();
+            firstPage.StackView.view.pop();
         }
     }
 
@@ -46,8 +46,8 @@ Item {
     Component.onCompleted: {
         forceActiveFocus();
     }
-    Stack.onStatusChanged: {
-            if(Stack.status == Stack.Active){
+    StackView.onStatusChanged: {
+            if(StackView.status == StackView.Active){
                 firstPage.forceActiveFocus();
             }
     }
@@ -63,7 +63,7 @@ Item {
         textColor: "white"
 
         onClicked: {
-            firstPage.Stack.view.push({item: Qt.resolvedUrl("AboutPage.qml"), properties: {baseMargin: firstPage.baseMargin}})
+            firstPage.StackView.view.push(Qt.resolvedUrl("AboutPage.qml"), {baseMargin: firstPage.baseMargin})
         }
     }
 
@@ -90,6 +90,8 @@ Item {
 
             CustomTextField {
                 id: nameField
+
+                width: parent.width
 
                 placeholder: zik.friendlyName
                 textColor: "white"
@@ -122,9 +124,26 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.leftMargin: firstPage.baseMargin
 
+                    contentItem: Text {
+                        leftPadding: 4
+                        text: cbAPO.displayText
+                        color: "black"
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    delegate: ItemDelegate {
+                        width: cbAPO.width
+                        contentItem: Text {
+                            text: model.text
+                            color: "black"
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        highlighted: cbAPO.highlightedIndex === index
+                    }
+
                     Connections {
                         target: zik
-                        onAutoPowerOffChanged: {
+                        function onAutoPowerOffChanged() {
                             cbAPO.updateSelectedItem();
                         }
                     }

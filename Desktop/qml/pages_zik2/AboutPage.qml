@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import ZikManager 1.0
 
-import "../elements/desktop"
+import "qrc:/elements/desktop"
 
 Item {
     id: firstPage
@@ -21,11 +21,11 @@ Item {
         textColor: "white"
 
         onClicked: {
-            firstPage.Stack.view.pop();
+            firstPage.StackView.view.pop();
         }
 
         function popPage() {
-            firstPage.Stack.view.pop();
+            firstPage.StackView.view.pop();
         }
     }
 

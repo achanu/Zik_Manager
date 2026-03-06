@@ -1,11 +1,10 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
 import ZikManager 1.0
 
-import "../elements/"
-import "../elements/desktop"
+import "qrc:/elements"
+import "qrc:/elements/desktop"
 
 Item {
     id: page
@@ -16,13 +15,13 @@ Item {
 
     Connections {
         target: zik
-        onEqualizerChanged: {
+        function onEqualizerChanged() {
             eq.checked = zik.equalizer == "true" ? true : false;
         }
-        onConcertHallChanged: {
+        function onConcertHallChanged() {
             ca.checked =  zik.concertHall == "true" ? true : false;
         }
-        onNcEnabledChanged: {
+        function onNcEnabledChanged() {
             nc.buttonState = (zik.autoNC && (zik.ncEnabled == "true")) ? 2 : zik.ncEnabled == "true" ? 1 : 0
         }
     }
@@ -43,7 +42,7 @@ Item {
             anchors.fill: parent
 
             onClicked: {
-                page.Stack.view.push({item: Qt.resolvedUrl("SettingsPage.qml")})
+                page.StackView.view.push(Qt.resolvedUrl("SettingsPage.qml"))
             }
         }
     }
@@ -223,16 +222,6 @@ Item {
                 handleRadius: 20
                 handleOpacity: 0.5
 
-                RadialGradient {
-                    anchors.fill: parent
-                    //source: parent
-
-                    gradient: Gradient {
-                        GradientStop { position: 0.0; color: "black" }
-                        GradientStop { position: 0.5; color: "transparent" }
-                    }
-                }
-
                 function updateThumbEqua() {
 
                     if( (!pressed) && (!animRunning) ){
@@ -313,7 +302,7 @@ Item {
 
         Connections {
             target: zik
-            onSourceChanged: {
+            function onSourceChanged() {
                 if(zik.source == "a2dp"){
                     console.log("Metapanel: Switch from line-in to A2DP detected. Starting timer.");
                     t_meta_source.start();
@@ -325,7 +314,7 @@ Item {
                     metapanel.opacity = 0.0;
                 }
             }
-            onPlayingChanged: {
+            function onPlayingChanged() {
                 if(zik.playing == false){
                     console.log("Metapanel: Paused detected. Starting timer.");
                     t_meta_playing.start();

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import "../elements/desktop"
+import "qrc:/elements/desktop"
 
 Item {
     id: page
@@ -18,7 +18,7 @@ Item {
          textColor: "white"
 
          onClicked: {
-             page.Stack.view.pop();
+             page.StackView.view.pop();
          }
      }
 
@@ -34,7 +34,7 @@ Item {
          textColor: "white"
 
          onClicked: {
-             page.Stack.view.push({item: Qt.resolvedUrl("ConcertHallPage.qml"), properties: {producerMode: 1}})
+             page.StackView.view.push(Qt.resolvedUrl("ConcertHallPage.qml"), {producerMode: 1})
          }
     }
 

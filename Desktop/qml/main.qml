@@ -1,12 +1,9 @@
 import QtQuick
 import QtQuick.Controls
-import Qt5Compat.GraphicalEffects
 
 import QtQuick.Window
 
 import ZikManager 1.0
-
-import "pages_zik2/"
 
 Item {
     id: appWindow
@@ -85,20 +82,25 @@ Item {
 
     StackView {
         id: stackView
-        anchors.fill: parent
-        initialItem: Qt.resolvedUrl("pages_zik2/LoadingPage.qml")
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: borderLeft.right
+        anchors.right: borderRight.left
+        background: null
+        clip: true
+        Component.onCompleted: push(Qt.resolvedUrl("pages_zik2/LoadingPage.qml"))
 
         pushEnter: Transition {
-            XAnimator { from: stackView.width; to: 0; duration: 300; easing.type: Easing.OutCubic }
+            NumberAnimation { property: "x"; from: stackView.width; to: 0; duration: 300; easing.type: Easing.OutCubic }
         }
         pushExit: Transition {
-            XAnimator { from: 0; to: -stackView.width; duration: 300; easing.type: Easing.OutCubic }
+            NumberAnimation { property: "x"; from: 0; to: -stackView.width; duration: 300; easing.type: Easing.OutCubic }
         }
         popEnter: Transition {
-            XAnimator { from: -stackView.width; to: 0; duration: 300; easing.type: Easing.OutCubic }
+            NumberAnimation { property: "x"; from: -stackView.width; to: 0; duration: 300; easing.type: Easing.OutCubic }
         }
         popExit: Transition {
-            XAnimator { from: 0; to: stackView.width; duration: 300; easing.type: Easing.OutCubic }
+            NumberAnimation { property: "x"; from: 0; to: stackView.width; duration: 300; easing.type: Easing.OutCubic }
         }
         replaceEnter: Transition {
             OpacityAnimator { from: 0; to: 1; duration: 300 }
@@ -108,22 +110,38 @@ Item {
         }
     }
 
+    Rectangle {
+        id: borderLeft
+        z: 1
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 30
+        color: "transparent"
+    }
+
+    Rectangle {
+        id: borderRight
+        z: 1
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 30
+        color: "transparent"
+    }
+
     Image {
         id: background
         anchors.fill: parent
         z:-1
 
         source: Qt.resolvedUrl("pages_zik2/bg.jpg")
-
-        visible: false
     }
 
-    FastBlur{
+    Rectangle {
         anchors.fill: background
-        source: background
-        radius: 64
-
-        z:-1
+        color: "#80000000"
+        z: -1
 
         MouseArea {
             anchors.fill: parent

@@ -13,6 +13,7 @@
         <file>pages_zik2/NoiseControlPage.qml</file>
         <file>elements/EquaBand.qml</file>
         <file>pages_zik2/bg.jpg</file>
+        <file>elements/desktop/qmldir</file>
         <file>elements/desktop/CustomSwitch.qml</file>
         <file>elements/desktop/LabeledSwitch.qml</file>
         <file>pages_zik2/icon-left-arrow.png</file>

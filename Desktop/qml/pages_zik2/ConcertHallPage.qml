@@ -3,8 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import ZikManager 1.0
 
-import "../elements"
-import "../elements/desktop"
+import "qrc:/elements"
+import "qrc:/elements/desktop"
 
 Item {
     id: firstPage
@@ -48,11 +48,11 @@ Item {
                  zik.producerMode = false;
              }
 
-             firstPage.Stack.view.pop();
+             firstPage.StackView.view.pop();
          }
 
          function popPage() {
-             firstPage.Stack.view.pop();
+             firstPage.StackView.view.pop();
          }
      }
 
@@ -85,7 +85,7 @@ Item {
              textColor: "white"
 
              onClicked: {
-                 firstPage.Stack.view.push(Qt.resolvedUrl("ProducerEqualizerPage.qml"));
+                 firstPage.StackView.view.push(Qt.resolvedUrl("ProducerEqualizerPage.qml"));
              }
         }
     }

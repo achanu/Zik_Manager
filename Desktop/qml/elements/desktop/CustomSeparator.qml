@@ -1,17 +1,12 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
-
 Item{
 
-    LinearGradient {
+    Rectangle {
         anchors.fill: parent
-        cached: true
-
-        start: Qt.point(0, 0)
-        end: Qt.point(parent.width, 0)
         gradient: Gradient {
+            orientation: Gradient.Horizontal
             GradientStop { position: 0.0; color: "white" }
             GradientStop { position: 1.0; color: "transparent" }
         }

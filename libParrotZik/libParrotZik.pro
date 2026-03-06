@@ -14,6 +14,7 @@ unix:!android:!winrt {
 TARGET = ParrotZik
 TEMPLATE = lib
 CONFIG += staticlib
+DESTDIR = $$OUT_PWD
 
 SOURCES += src/gain.cpp \
     src/presetmodel.cpp \

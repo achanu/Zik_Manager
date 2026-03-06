@@ -102,7 +102,7 @@ void ParrotZikTweeker::closeBTConnectionsBeforeQuit()
 {
     if(!socket) return;
 
-	if (socket->state() == QBluetoothSocket::ConnectedState) {
+	if (socket->state() == QBluetoothSocket::SocketState::ConnectedState) {
 		qDebug() << "Disconnecting from BT service before quitting";
 		socket->disconnectFromService();
 	}
@@ -324,10 +324,8 @@ void ParrotZikTweeker::startAutoConnection()
             qDebug() << "Service discovery on android not working correctly (missing custom UUIDs). Resorting to audio service scanning + version string parsing for zik + model detection, might be unreliable.";
 
             bool handsfreeOk = false;
-            bool phonebookOk = false;
             bool audiosinkOk = false;
             bool avcontrollerOk = false;
-            bool avtargetOk = false;
 
             for(int j=0; j<uuids.length(); j++){
                 QString u = uuids.at(j);
@@ -337,7 +335,6 @@ void ParrotZikTweeker::startAutoConnection()
                     handsfreeOk = true;
                 }else if(u.startsWith("0000112e")){
                     qDebug("Found phone book service");
-                    phonebookOk = true;
                 }else if(u.startsWith("0000110b")){
                     qDebug("Found audio sink service");
                     audiosinkOk = true;
@@ -346,7 +343,6 @@ void ParrotZikTweeker::startAutoConnection()
                     avcontrollerOk = true;
                 }else if(u.startsWith("0000110c")){
                     qDebug("Found av rc target service");
-                    avtargetOk = true;
                 }
 
 
@@ -961,8 +957,11 @@ QStringList ParrotZikTweeker::discoveredMprisPlayer(){
 
 void ParrotZikTweeker::metadataCallback(QString dbusinterface,QVariantMap map,QStringList l)
 {
-    int updateRequired = 0;
+    Q_UNUSED(dbusinterface);
+    Q_UNUSED(map);
+    Q_UNUSED(l);
 #if defined(Q_OS_LINUX) and !defined(Q_OS_ANDROID)
+    int updateRequired = 0;
 
     if(map.contains("PlaybackStatus")){
         qDebug() << "Playback status=" << map.value("PlaybackStatus").toString();
@@ -1046,11 +1045,11 @@ void ParrotZikTweeker::metadataCallback(QString dbusinterface,QVariantMap map,QS
 
 void ParrotZikTweeker::getMprisMetadata(bool forceUpdate)
 {
+    Q_UNUSED(forceUpdate);
+#if defined(Q_OS_LINUX) and !defined(Q_OS_ANDROID)
     int updateRequired = 0;
 
     if(forceUpdate) updateRequired = 1;
-
-#if defined(Q_OS_LINUX) and !defined(Q_OS_ANDROID)
 
     if(dbus != 0){
 
@@ -1242,7 +1241,7 @@ void ParrotZikTweeker::deviceDiscovered(const QBluetoothDeviceInfo &device)
 void ParrotZikTweeker::deviceDiscoveryFinished()
 {
     if(socket){
-        if(socket->state() == QBluetoothSocket::UnconnectedState){
+        if(socket->state() == QBluetoothSocket::SocketState::UnconnectedState){
             qDebug() << "Device discovery finished and we're not connecting meaning... Zik NOT found, retrying in " << autoconnection_timer->interval() << "ms.";
             autoconnection_timer->setInterval(3000);
             autoconnection_timer->start();
@@ -1352,9 +1351,9 @@ void ParrotZikTweeker::serviceDiscoveryFinished()
     serviceDiscoveryAgent = 0;
 
     if(socket){
-        if(socket->state() == QBluetoothSocket::ConnectedState){
+        if(socket->state() == QBluetoothSocket::SocketState::ConnectedState){
              qDebug() << "Service discovery finished. Connected.";
-        }else if(socket->state() == QBluetoothSocket::ConnectingState){
+        }else if(socket->state() == QBluetoothSocket::SocketState::ConnectingState){
              qDebug() << "Service discovery finished. Connecting to (apparently) found service.";
         }
 
@@ -1386,13 +1385,13 @@ void ParrotZikTweeker::startClient(const QBluetoothServiceInfo &remoteService)
 #endif
         this->connect(socket, SIGNAL(connected()), this, SLOT(socketConnected()));
         this->connect(socket, SIGNAL(disconnected()), this, SLOT(stopClient()));
-        this->connect(socket, SIGNAL(error(QBluetoothSocket::SocketError)), this, SLOT(socketError(QBluetoothSocket::SocketError)));
+        this->connect(socket, SIGNAL(errorOccurred(QBluetoothSocket::SocketError)), this, SLOT(socketError(QBluetoothSocket::SocketError)));
         this->connect(socket, SIGNAL(stateChanged(QBluetoothSocket::SocketState)), this, SLOT(socketStateChanged(QBluetoothSocket::SocketState)));
         this->connect(socket, SIGNAL(readyRead()), this, SLOT(readSocket()));
 
     }
 
-    if(socket->state() != QBluetoothSocket::UnconnectedState){
+    if(socket->state() != QBluetoothSocket::SocketState::UnconnectedState){
         qDebug("Socket busy : connection in progress or already connected.");
         return;
     }
@@ -2324,6 +2323,7 @@ void ParrotZikTweeker::readSocket()
 
 void ParrotZikTweeker::sendMessage(const QString &message, const bool &waitForAnswer)
  {
+    Q_UNUSED(waitForAnswer);
 
     if(isConnected() && (!demoMode()) && (!downloadInProgress())){
         qDebug() << "ENQUEUE <= " << message;
@@ -2428,6 +2428,7 @@ void ParrotZikTweeker::stopClient()
 
 void ParrotZikTweeker::socketError(QBluetoothSocket::SocketError error)
 {
+    Q_UNUSED(error);
     qDebug("Socket error");
 
     if(socket){
