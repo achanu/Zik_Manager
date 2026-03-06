@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -13,24 +13,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # --- aqtinstall : installeur Qt headless ---
-RUN pip3 install --no-cache-dir aqtinstall
+# Ubuntu 24.04 (PEP 668) requiert --break-system-packages pour pip install global
+RUN pip3 install --no-cache-dir --break-system-packages aqtinstall
 
-# --- Qt 6.8.1 hôte Linux : moc, rcc, androiddeployqt ---
-RUN aqt install-qt linux desktop 6.8.1 linux_gcc_64 \
+# --- Qt 6.8.3 hôte Linux : moc, rcc, androiddeployqt ---
+RUN aqt install-qt linux desktop 6.8.3 linux_gcc_64 \
         -O /opt/Qt
 
-# --- Qt 6.8.1 cible Android arm64-v8a ---
+# --- Qt 6.8.3 cible Android arm64-v8a ---
 # Qt 6 revient aux paquets per-ABI ; pas besoin de multi-ABI.
-RUN aqt install-qt linux android 6.8.1 android_arm64_v8a \
+RUN aqt install-qt linux android 6.8.3 android_arm64_v8a \
         -O /opt/Qt
 
 # --- Modules Qt additionnels pour Android arm64 ---
 # qtconnectivity = QtBluetooth ; qt5compat = remplacement QtGraphicalEffects
-RUN aqt install-qt linux android 6.8.1 android_arm64_v8a \
+RUN aqt install-qt linux android 6.8.3 android_arm64_v8a \
         -m qtconnectivity qt5compat -O /opt/Qt
 
 # --- Modules Qt additionnels pour l'hôte Linux (outils de build) ---
-RUN aqt install-qt linux desktop 6.8.1 linux_gcc_64 \
+RUN aqt install-qt linux desktop 6.8.3 linux_gcc_64 \
         -m qtconnectivity qt5compat -O /opt/Qt
 
 # --- Android cmdline-tools v9.0 (bootstrap) ---
