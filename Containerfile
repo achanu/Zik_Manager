@@ -3,9 +3,9 @@ FROM ubuntu:24.04
 ARG DEBIAN_FRONTEND=noninteractive
 
 # --- Dépendances système ---
-# OpenJDK 17 : requis par Gradle 8.x utilisé par Qt 6.8
+# OpenJDK 21 LTS : Gradle 8.10 supporte jusqu'à Java 23
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        openjdk-17-jdk-headless \
+        openjdk-21-jdk-headless \
         python3-pip \
         wget \
         unzip \
@@ -58,7 +58,7 @@ RUN sdkmanager \
         "ndk;27.2.12479018"
 
 ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk/27.2.12479018
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 
 WORKDIR /project
 CMD ["/bin/bash", "/project/scripts/build-android.sh"]
