@@ -3,8 +3,8 @@
 # Produit /output/ZikManager.apk (APK debug signé avec la debug keystore Java).
 set -e
 
-QMAKE=/opt/Qt/6.8.3/android_arm64_v8a/bin/qmake
-ANDROID_DEPLOY_QT=/opt/Qt/6.8.3/gcc_64/bin/androiddeployqt
+QMAKE=/opt/Qt/6.11.0/android_arm64_v8a/bin/qmake
+ANDROID_DEPLOY_QT=/opt/Qt/6.11.0/gcc_64/bin/androiddeployqt
 BUILD_DIR=/build
 OUTPUT_DIR=/output
 
@@ -54,7 +54,7 @@ echo "==> androiddeployqt..."
     --android-platform android-35 \
     --min-sdk-version 31 \
     --jdk    "${JAVA_HOME}" \
-    --qml-import-paths /opt/Qt/6.8.3/android_arm64_v8a/qml \
+    --qml-import-paths /opt/Qt/6.11.0/android_arm64_v8a/qml \
     --gradle
 
 APK="${BUILD_DIR}/android-build/build/outputs/apk/debug/android-build-debug.apk"
