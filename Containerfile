@@ -55,10 +55,10 @@ ENV PATH="${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platf
 RUN yes | sdkmanager --licenses > /dev/null && \
     sdkmanager "cmdline-tools;latest"
 
-# --- Android SDK platform 35, build-tools 36.1.0, NDK r27 LTS ---
+# --- Android SDK platform 36, build-tools 36.1.0, NDK r27 LTS ---
 RUN sdkmanager \
         "platform-tools" \
-        "platforms;android-35" \
+        "platforms;android-36" \
         "build-tools;36.1.0" \
         "ndk;27.2.12479018"
 

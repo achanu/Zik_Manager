@@ -51,7 +51,7 @@ echo "==> androiddeployqt..."
 "${ANDROID_DEPLOY_QT}" \
     --input  "${DEPLOY_JSON}" \
     --output "${BUILD_DIR}/android-build" \
-    --android-platform android-35 \
+    --android-platform android-36 \
     --min-sdk-version 31 \
     --jdk    "${JAVA_HOME}" \
     --qml-import-paths /opt/Qt/6.11.0/android_arm64_v8a/qml \
