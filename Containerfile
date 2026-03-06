@@ -10,6 +10,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         wget \
         unzip \
         make \
+        libglib2.0-0 \
+        libdbus-1-3 \
+        libfontconfig1 \
+        libfreetype6 \
     && rm -rf /var/lib/apt/lists/*
 
 # --- aqtinstall : installeur Qt headless ---
